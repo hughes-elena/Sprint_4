@@ -1,0 +1,111 @@
+package ru.praktikum;
+
+import org.openqa.selenium.By; // импортировали класс By
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver; //импортировали класс Webdriver
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration; // для новой версии Selenium при ожидании нужно теперь писать Duration.ofSeconds(...)
+import java.util.List;
+
+//На главной странице нам необходимо проверить:
+// ТОЛЬКО Выпадающий список в разделе «Вопросы о важном». В нем надо:
+// 1. проверить: что при КЛИКЕ на выпадающую стрелочку:
+// 2.открывается соответствующий текст.
+// ШАГИ:
+// Импортировать необходимые классы import org....
+// 1. для начала я создаю Java class главной стр, где находятся эти элементы(п1.п.2) И я сейчас в нем.
+// 2. Объявляю переменную WebDriver  WebDriver driver
+// 3. Создаю конструктор для передачи переменной WebDriver: this.driver=driver
+// 4. После этого я создаю ЛОКАТОРЫ (т.е. элементы, какие мне надо проверить:
+// 4.1. Локатор по раскрывающейся стрелочки private By...= By....
+// 4.2. Локатор по тексту, кот. раскрывается после нажатия на стрелку private By... = By...
+// 5. создаю МЕТОДЫ public void {} для этих локаторов(элементов) PS все методы POM -совершают действия с элементами и выполняют проверки:
+//5.1. Метод по локатору п.4.1: Метод, который нажимает на стрелочку
+//5.2 Создаю ожидание, чтобы текст точно появился и тест не выдал ошибку new WebDriverWait
+//5.3. Метод по локатору п.4.2: Метод, который проверяет, что появился текст
+//* Со след задания, нужно в этом классе создать:
+//1. Локатор для кнопки "Заказать" в правом верхнем углу стр + ожидание загрузки след стр и
+//2.Локатор для кнопки "Заказать" внизу стр + ожидание загрузки след стр и
+//3. Два отдельных Метода для этих кнопок Заказать
+
+//1. создали page object - класс для главной страницы MainPage
+public class MainPage {
+    WebDriver driver; //2. Объявили переменную/добавили поле driver
+
+    public MainPage(WebDriver driver) {
+        this.driver = driver; //3. конструктор для передачи Webdriver
+    }
+
+    // ЛОКАТОРЫ private By:
+    private By acceptCookie = By.xpath("//*[@id=\"rcc-confirm-button\"]"); //локатор для кнопки "да все привыкли"
+    private By allDropdownArrows = By.xpath("//div[@class='accordion__button']"); // Все  выпад.стрелочки
+    private String dropdownTextByIndex = "//div[@id='accordion__panel-%d']/p"; // Шаблон для текста ответа по индексу
+    //Локаторы Для ЗАКАЗА Создаю локаторы для кнопок "Заказать" (для след задания):
+    private By orderScooterTop = By.xpath("(//button[text()='Заказать'])[1]"); //верхняя кнопка Заказать
+    private By orderScooterBottom = By.xpath("(//button[text()='Заказать'])[2]"); //нижняя кнопка Заказать
+
+    //Константы для текстов ответов
+    public static final String ANSWER_1 = "Сутки — 400 рублей. Оплата курьеру — наличными или картой.";
+    public static final String ANSWER_2 = "Пока что у нас так: один заказ — один самокат. Если хотите покататься с друзьями, можете просто сделать несколько заказов — один за другим.";
+    public static final String ANSWER_3 = "Допустим, вы оформляете заказ на 8 мая. Мы привозим самокат 8 мая в течение дня. Отсчёт времени аренды начинается с момента, когда вы оплатите заказ курьеру. Если мы привезли самокат 8 мая в 20:30, суточная аренда закончится 9 мая в 20:30.";
+    public static final String ANSWER_4 = "Только начиная с завтрашнего дня. Но скоро станем расторопнее.";
+    public static final String ANSWER_5 = "Пока что нет! Но если что-то срочное — всегда можно позвонить в поддержку по красивому номеру 1010.";
+    public static final String ANSWER_6 = "Самокат приезжает к вам с полной зарядкой. Этого хватает на восемь суток — даже если будете кататься без передышек и во сне. Зарядка не понадобится.";
+    public static final String ANSWER_7 = "Да, пока самокат не привезли. Штрафа не будет, объяснительной записки тоже не попросим. Все же свои.";
+    public static final String ANSWER_8 = "Да, обязательно. Всем самокатов! И Москве, и Московской области.";
+
+    // Создаем массив ожидаемых ответов для удобного доступа по индексу
+    String[] expectedAnswers = {
+            ANSWER_1, ANSWER_2, ANSWER_3, ANSWER_4,
+            ANSWER_5, ANSWER_6, ANSWER_7, ANSWER_8
+    };
+
+    // Метод для принятия кук
+    public void clickAcceptCookie() {
+        WebElement cookieButton = new WebDriverWait(driver, Duration.ofSeconds(5))
+                .until(ExpectedConditions.elementToBeClickable(acceptCookie));
+        cookieButton.click();
+    }
+
+    // 5.1 Метод для нажатия выпадающей стрелочки и появления текста после нажатия:
+    public void checkDropdownAnswers(int index, String expectedText) {
+        By arrowLocator = By.id("accordion__heading-" + index);
+        By answerLocator = By.id("accordion__panel-" + index);
+
+        WebElement arrow = driver.findElement(arrowLocator);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", arrow);
+        arrow.click();
+        ;
+
+        String actualText = driver.findElement(answerLocator).getText();
+
+        if (actualText.equals(expectedText)) {
+            System.out.println("Стрелка #" + (index + 1) + ": Текст соответствует ожидаемому");
+        } else {
+            System.out.println("Стрелка #" + (index + 1) + ": Текст не соответствует ожидаемому");
+        }
+    }
+
+    // Метод для нажатия верхней кнопки "Заказать" и ожидания появления страницы заказа
+    public void clickOrderScooterTopButton() {
+        WebElement order = driver.findElement(orderScooterTop); // ищет кнопку "Заказать"
+        order.click(); // кликаем по ней
+        // Ждём в этом методе появления след стр "Для кого самокат"(стр оформления заказа)
+        new WebDriverWait(driver, Duration.ofSeconds(5))
+                .until(ExpectedConditions.visibilityOfElementLocated(
+                        By.xpath("//div[text()='Для кого самокат']")));
+    }
+
+    // Метод для нажатия нижней кнопки "Заказать" и ожидания появления страницы заказа
+    public void clickOrderScooterBottomButton() {
+        WebElement order = driver.findElement(orderScooterBottom); // ищет кнопку "Заказать"
+        order.click(); // кликаем по ней
+        // Ждём в этом методе появления след стр "Для кого самокат"(стр оформления заказа)
+        new WebDriverWait(driver, Duration.ofSeconds(5))
+                .until(ExpectedConditions.visibilityOfElementLocated(
+                        By.xpath("//div[text()='Для кого самокат']")));
+    }
+}
