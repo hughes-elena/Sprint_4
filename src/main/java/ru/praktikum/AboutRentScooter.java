@@ -34,15 +34,15 @@ public class AboutRentScooter {
         this.driver = driver;
     }
 
-    private By dateField = By.xpath("//input[@placeholder='* Когда привезти самокат']");
-    private By dateInCalendar = By.className("react-datepicker__month-container");
-    private By lengthField = By.xpath("//div[@class='Dropdown-placeholder' and text()='* Срок аренды']");
-    private By rentalPeriodOptions = By.xpath("//div[@class='Dropdown-option']");
-    private By blackColourCheckboxField = By.id("black");
-    private By greyColourCheckboxField = By.id("grey");
-    private By commentField = By.xpath("//input[@placeholder='Комментарий для курьера']");
-    private By orderButton = By.xpath("//button[@class='Button_Button__ra12g Button_Middle__1CSJM']");
-    private By goBackButton = By.xpath("//button[@class='Button_Button__ra12g Button_Middle__1CSJM Button_Inverted__3IF-i']");
+    private final By dateField = By.xpath("//input[@placeholder='* Когда привезти самокат']");
+    private final By dateInCalendar = By.className("react-datepicker__month-container");
+    private final By lengthField = By.xpath("//div[@class='Dropdown-placeholder' and text()='* Срок аренды']");
+    private final By rentalPeriodOptions = By.xpath("//div[@class='Dropdown-option']");
+    private final By blackColourCheckboxField = By.id("black");
+    private final By greyColourCheckboxField = By.id("grey");
+    private final By commentField = By.xpath("//input[@placeholder='Комментарий для курьера']");
+    private final By orderButton = By.xpath("//button[@class='Button_Button__ra12g Button_Middle__1CSJM']");
+    private final By goBackButton = By.xpath("//button[@class='Button_Button__ra12g Button_Middle__1CSJM Button_Inverted__3IF-i']");
 
     private void waitForElement(By locator) {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(3));

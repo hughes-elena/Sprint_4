@@ -38,27 +38,24 @@ public class ToWhomScooter {
     }
     //Создаем локаторы п.п3.2-3.7
 
-    private By nameField = By.cssSelector("input[placeholder='* Имя']"); // cssSelector для поля Имя
-    private By lastNameField = By.cssSelector("input[placeholder='* Фамилия']"); // cssSelector для поля Фамилия
-    private By addressField = By.cssSelector("input[placeholder='* Адрес: куда привезти заказ']"); // cssSelector для поля Адрес
-    private By metroDropDownList = By.cssSelector("input[placeholder='* Станция метро']"); // cssSelector для поля станция Метро
-    private By phoneNumberField = By.cssSelector("input[placeholder='* Телефон: на него позвонит курьер']"); // cssSelector для поля Телефон
-    private By nextButton = By.xpath("//button[text()='Далее']");//по xpath по тексту кнопки
+    private final By nameField = By.cssSelector("input[placeholder='* Имя']"); // cssSelector для поля Имя
+    private final By lastNameField = By.cssSelector("input[placeholder='* Фамилия']"); // cssSelector для поля Фамилия
+    private final By addressField = By.cssSelector("input[placeholder='* Адрес: куда привезти заказ']"); // cssSelector для поля Адрес
+    private final By metroDropDownList = By.cssSelector("input[placeholder='* Станция метро']"); // cssSelector для поля станция Метро
+    private final By phoneNumberField = By.cssSelector("input[placeholder='* Телефон: на него позвонит курьер']"); // cssSelector для поля Телефон
+    private final By nextButton = By.xpath("//button[text()='Далее']");//по xpath по тексту кнопки
 
     //Создаем методы для локаторов
 
     public void setNameField(String name) {
         driver.findElement(nameField).sendKeys(name); // метод заполняет поля "Имя"
     }
-
     public void setLastNameField(String lastName) {
         driver.findElement(lastNameField).sendKeys(lastName); // метод заполняет поля "Фамилия"
     }
-
     public void setAddressField(String address) {
         driver.findElement(addressField).sendKeys(address); // метод заполняет поля "Адрес: куда привезти заказ"
     }
-
     public void setMetroStationField(String metro) {
         WebElement metroInput = driver.findElement(metroDropDownList); // метод находит поле "Метро" и сохраняет в переменную metroInput
 

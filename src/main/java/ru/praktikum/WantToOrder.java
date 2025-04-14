@@ -17,7 +17,8 @@ public class WantToOrder {
         this.driver = driver; //3. конструктор для передачи Webdriver
     }
 
-    private By yesButton = By.xpath("//button[text()='Да']");
+    private final By yesButton = By.xpath("//button[text()='Да']");
+    private final By orderSuccessText = By.xpath("//div[text()='Заказ оформлен']");
 
     public void clickYesButton() {
         WebElement order = driver.findElement(yesButton); // ищет кнопку "Да все привыкли"
@@ -26,5 +27,9 @@ public class WantToOrder {
         new WebDriverWait(driver, Duration.ofSeconds(15))
                 .until(ExpectedConditions.visibilityOfElementLocated(
                         By.xpath("//div[text()='Заказ оформлен']")));
+    }
+    public String getOrderSuccessText() {
+        WebElement headerElement = driver.findElement(orderSuccessText);
+        return headerElement.getText();
     }
 }

@@ -33,6 +33,7 @@ import java.util.List;
 
 //1. создали page object - класс для главной страницы MainPage
 public class MainPage {
+    public static final String URL_PAGE = "https://qa-scooter.praktikum-services.ru/";
     WebDriver driver; //2. Объявили переменную/добавили поле driver
 
     public MainPage(WebDriver driver) {
@@ -40,35 +41,27 @@ public class MainPage {
     }
 
     // ЛОКАТОРЫ private By:
-    private By acceptCookie = By.xpath("//*[@id=\"rcc-confirm-button\"]"); //локатор для кнопки "да все привыкли"
-    private By allDropdownArrows = By.xpath("//div[@class='accordion__button']"); // Все  выпад.стрелочки
-    private String dropdownTextByIndex = "//div[@id='accordion__panel-%d']/p"; // Шаблон для текста ответа по индексу
+    private final By allDropdownArrows = By.xpath("//div[@class='accordion__button']"); // Все  выпад.стрелочки
+    private final String dropdownTextByIndex = "//div[@id='accordion__panel-%d']/p"; // Шаблон для текста ответа по индексу
     //Локаторы Для ЗАКАЗА Создаю локаторы для кнопок "Заказать" (для след задания):
-    private By orderScooterTop = By.xpath("(//button[text()='Заказать'])[1]"); //верхняя кнопка Заказать
-    private By orderScooterBottom = By.xpath("(//button[text()='Заказать'])[2]"); //нижняя кнопка Заказать
+    private final By orderScooterTop = By.xpath("(//button[text()='Заказать'])[1]"); //верхняя кнопка Заказать
+    private final By orderScooterBottom = By.xpath("(//button[text()='Заказать'])[2]"); //нижняя кнопка Заказать
 
     //Константы для текстов ответов
-    public static final String ANSWER_1 = "Сутки — 400 рублей. Оплата курьеру — наличными или картой.";
-    public static final String ANSWER_2 = "Пока что у нас так: один заказ — один самокат. Если хотите покататься с друзьями, можете просто сделать несколько заказов — один за другим.";
-    public static final String ANSWER_3 = "Допустим, вы оформляете заказ на 8 мая. Мы привозим самокат 8 мая в течение дня. Отсчёт времени аренды начинается с момента, когда вы оплатите заказ курьеру. Если мы привезли самокат 8 мая в 20:30, суточная аренда закончится 9 мая в 20:30.";
-    public static final String ANSWER_4 = "Только начиная с завтрашнего дня. Но скоро станем расторопнее.";
-    public static final String ANSWER_5 = "Пока что нет! Но если что-то срочное — всегда можно позвонить в поддержку по красивому номеру 1010.";
-    public static final String ANSWER_6 = "Самокат приезжает к вам с полной зарядкой. Этого хватает на восемь суток — даже если будете кататься без передышек и во сне. Зарядка не понадобится.";
-    public static final String ANSWER_7 = "Да, пока самокат не привезли. Штрафа не будет, объяснительной записки тоже не попросим. Все же свои.";
-    public static final String ANSWER_8 = "Да, обязательно. Всем самокатов! И Москве, и Московской области.";
+    public static final String ANSWER_COST = "Сутки — 400 рублей. Оплата курьеру — наличными или картой.";
+    public static final String ANSWER_ONE_SCOOTER = "Пока что у нас так: один заказ — один самокат. Если хотите покататься с друзьями, можете просто сделать несколько заказов — один за другим.";
+    public static final String ANSWER_RENT_START = "Допустим, вы оформляете заказ на 8 мая. Мы привозим самокат 8 мая в течение дня. Отсчёт времени аренды начинается с момента, когда вы оплатите заказ курьеру. Если мы привезли самокат 8 мая в 20:30, суточная аренда закончится 9 мая в 20:30.";
+    public static final String ANSWER_ORDER_TODAY = "Только начиная с завтрашнего дня. Но скоро станем расторопнее.";
+    public static final String ANSWER_PROLONG_RETURN = "Пока что нет! Но если что-то срочное — всегда можно позвонить в поддержку по красивому номеру 1010.";
+    public static final String ANSWER_CHARGE = "Самокат приезжает к вам с полной зарядкой. Этого хватает на восемь суток — даже если будете кататься без передышек и во сне. Зарядка не понадобится.";
+    public static final String ANSWER_CANCEL_ORDER = "Да, пока самокат не привезли. Штрафа не будет, объяснительной записки тоже не попросим. Все же свои.";
+    public static final String ANSWER_DELIVER_FAR = "Да, обязательно. Всем самокатов! И Москве, и Московской области.";
 
     // Создаем массив ожидаемых ответов для удобного доступа по индексу
     String[] expectedAnswers = {
-            ANSWER_1, ANSWER_2, ANSWER_3, ANSWER_4,
-            ANSWER_5, ANSWER_6, ANSWER_7, ANSWER_8
+            ANSWER_COST, ANSWER_ONE_SCOOTER, ANSWER_RENT_START, ANSWER_ORDER_TODAY,
+            ANSWER_PROLONG_RETURN, ANSWER_CHARGE, ANSWER_CANCEL_ORDER, ANSWER_DELIVER_FAR
     };
-
-    // Метод для принятия кук
-    public void clickAcceptCookie() {
-        WebElement cookieButton = new WebDriverWait(driver, Duration.ofSeconds(5))
-                .until(ExpectedConditions.elementToBeClickable(acceptCookie));
-        cookieButton.click();
-    }
 
     // 5.1 Метод для нажатия выпадающей стрелочки и появления текста после нажатия:
     public void checkDropdownAnswers(int index, String expectedText) {
@@ -87,6 +80,13 @@ public class MainPage {
         } else {
             System.out.println("Стрелка #" + (index + 1) + ": Текст не соответствует ожидаемому");
         }
+
+    }
+
+    public String getAnswerTextByIndex(int index) {
+        By answerLocator = By.id("accordion__panel-" + index);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(3));
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(answerLocator)).getText();
     }
 
     // Метод для нажатия верхней кнопки "Заказать" и ожидания появления страницы заказа
