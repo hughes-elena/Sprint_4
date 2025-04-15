@@ -42,20 +42,13 @@ public class AboutRentScooter {
     private final By greyColourCheckboxField = By.id("grey");
     private final By commentField = By.xpath("//input[@placeholder='Комментарий для курьера']");
     private final By orderButton = By.xpath("//button[@class='Button_Button__ra12g Button_Middle__1CSJM']");
-    private final By forWhom = By.xpath("//div[text()='Для кого самокат']");
     private final By goBackButton = By.xpath("//button[@class='Button_Button__ra12g Button_Middle__1CSJM Button_Inverted__3IF-i']");
-    private final By doYouWantToOrder = By.xpath("//*[text()='Хотите оформить заказ?']");
+    private final By toWhom = By.xpath("//div[text()='Для кого самокат']");
+    private final By wantToOrder = By.xpath("//*[text()='Хотите оформить заказ?']");
 
     private void waitForElement(By locator) {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(3));
         wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
-    }
-
-    private By specificDayLocator(String day) {
-        return By.xpath(String.format(
-                "//div[contains(@class, 'react-datepicker__day') " +
-                        "and contains(@aria-label, '%s') " +
-                        "and not(contains(@class, 'disabled'))]", day));
     }
 
     public void selectDateFromCalendar(String date) {
@@ -65,10 +58,15 @@ public class AboutRentScooter {
 
         // Формируем локатор для конкретной даты
         String day = date.split("\\.")[0];
+        String dayLocator = String.format(
+                "//div[contains(@class, 'react-datepicker__day') " +
+                        "and contains(@aria-label, '%s') " +
+                        "and not(contains(@class, 'disabled'))]",
+                day);
 
         // Ждем и кликаем
         new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.elementToBeClickable(By.xpath(day)))
+                .until(ExpectedConditions.elementToBeClickable(By.xpath(dayLocator)))
                 .click();
     }
 
@@ -76,7 +74,7 @@ public class AboutRentScooter {
         driver.findElement(lengthField).click();
         waitForElement(rentalPeriodOptions);
 
-        // Find the option with the matching text and click it
+// Find the option with the matching text and click it
         driver.findElement(By.xpath(String.format("//div[@class='Dropdown-option' and contains(text(), '%s')]", period)))
                 .click();
     }
@@ -96,13 +94,12 @@ public class AboutRentScooter {
     public void clickOrderButton() {
         driver.findElement(orderButton).click();
         new WebDriverWait(driver, Duration.ofSeconds(5))
-                .until(ExpectedConditions.visibilityOfElementLocated(
-                        doYouWantToOrder));
+                .until(ExpectedConditions.visibilityOfElementLocated(wantToOrder));
     }
 
     public void clickGoBackButton() {
         driver.findElement(goBackButton).click();
         new WebDriverWait(driver, Duration.ofSeconds(5))
-                .until(ExpectedConditions.visibilityOfElementLocated(forWhom));
+                .until(ExpectedConditions.visibilityOfElementLocated(toWhom));
     }
 }

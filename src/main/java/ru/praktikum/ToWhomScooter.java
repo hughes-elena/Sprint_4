@@ -44,46 +44,32 @@ public class ToWhomScooter {
     private final By metroDropDownList = By.cssSelector("input[placeholder='* Станция метро']"); // cssSelector для поля станция Метро
     private final By phoneNumberField = By.cssSelector("input[placeholder='* Телефон: на него позвонит курьер']"); // cssSelector для поля Телефон
     private final By nextButton = By.xpath("//button[text()='Далее']");//по xpath по тексту кнопки
-    private final By metroInputField = By.cssSelector("input[placeholder='* Станция метро']");
-    private final By metroOption = By.xpath("//button[contains(@class, 'select-search__option')]//div[contains(@class, 'Order_Text__2broi') and text()='%s']");
-    private final By metroDropdown = By.xpath("//div[contains(@class, 'select-search__select')]");
-    private final By aboutRent = By.xpath("//div[text()='Про аренду']");
+
     //Создаем методы для локаторов
 
     public void setNameField(String name) {
         driver.findElement(nameField).sendKeys(name); // метод заполняет поля "Имя"
     }
-
     public void setLastNameField(String lastName) {
         driver.findElement(lastNameField).sendKeys(lastName); // метод заполняет поля "Фамилия"
     }
-
     public void setAddressField(String address) {
         driver.findElement(addressField).sendKeys(address); // метод заполняет поля "Адрес: куда привезти заказ"
     }
-
     public void setMetroStationField(String metro) {
         WebElement metroInput = driver.findElement(metroDropDownList); // метод находит поле "Метро" и сохраняет в переменную metroInput
 
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", metroInput);
         metroInput.click(); // метод кликает на поле "метро" и появляется выпадающий список станций
-        waitForDropdownToAppear(); // Ожидаем появления выпадающего списка с метро
+        new WebDriverWait(driver, Duration.ofSeconds(5)) //создаем ожидание в 5сек
+                .until(ExpectedConditions.visibilityOfElementLocated(
+                        By.xpath("//div[contains(@class, 'select-search__select')]"))); //ждем до тех пор, пока нужная станция не появится в списке
+        By metroOption = By.xpath(String.format(
+                "//button[contains(@class, 'select-search__option')]//div[contains(@class, 'Order_Text__2broi') and text()='%s']",
+                metro));
 
-        // Кликаем на нужную опцию
-        selectMetroOption(metro);
-    }
-
-    // Метод ожидания появления выпадающего списка
-    private void waitForDropdownToAppear() {
-        new WebDriverWait(driver, Duration.ofSeconds(5))
-                .until(ExpectedConditions.visibilityOfElementLocated(metroDropdown));
-    }
-
-    // Метод для клика по опции метро
-    private void selectMetroOption(String metro) {
-        By metroOptionWithText = By.xpath(String.format(metroOption.toString(), metro));
         new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.elementToBeClickable(metroOptionWithText))
+                .until(ExpectedConditions.elementToBeClickable(metroOption))
                 .click();
     }
 
@@ -96,8 +82,7 @@ public class ToWhomScooter {
         driver.findElement(nextButton).click(); // ищем кнопку "Далее" и кликаем по кнопке
 
         new WebDriverWait(driver, Duration.ofSeconds(5)) //ждем, когда появится след стр
-                .until(ExpectedConditions.visibilityOfElementLocated(aboutRent));
+                .until(ExpectedConditions.visibilityOfElementLocated(
+                        By.xpath("//div[text()='Про аренду']")));
     }
 }
-
-
