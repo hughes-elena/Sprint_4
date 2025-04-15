@@ -46,6 +46,15 @@ public class MainPage {
     //Локаторы Для ЗАКАЗА Создаю локаторы для кнопок "Заказать" (для след задания):
     private final By orderScooterTop = By.xpath("(//button[text()='Заказать'])[1]"); //верхняя кнопка Заказать
     private final By orderScooterBottom = By.xpath("(//button[text()='Заказать'])[2]"); //нижняя кнопка Заказать
+    private final By acceptCookie = By.id("rcc-confirm-button");
+    private final By forWhom = By.xpath("//div[text()='Для кого самокат']");
+
+    // Метод для принятия кук
+    public void acceptCookies() {
+        WebElement cookieButton = new WebDriverWait(driver, Duration.ofSeconds(5))
+                .until(ExpectedConditions.elementToBeClickable(acceptCookie));
+        cookieButton.click();
+    }
 
     //Константы для текстов ответов
     public static final String ANSWER_COST = "Сутки — 400 рублей. Оплата курьеру — наличными или картой.";
@@ -95,8 +104,7 @@ public class MainPage {
         order.click(); // кликаем по ней
         // Ждём в этом методе появления след стр "Для кого самокат"(стр оформления заказа)
         new WebDriverWait(driver, Duration.ofSeconds(5))
-                .until(ExpectedConditions.visibilityOfElementLocated(
-                        By.xpath("//div[text()='Для кого самокат']")));
+                .until(ExpectedConditions.visibilityOfElementLocated(forWhom));
     }
 
     // Метод для нажатия нижней кнопки "Заказать" и ожидания появления страницы заказа
@@ -105,7 +113,6 @@ public class MainPage {
         order.click(); // кликаем по ней
         // Ждём в этом методе появления след стр "Для кого самокат"(стр оформления заказа)
         new WebDriverWait(driver, Duration.ofSeconds(5))
-                .until(ExpectedConditions.visibilityOfElementLocated(
-                        By.xpath("//div[text()='Для кого самокат']")));
+                .until(ExpectedConditions.visibilityOfElementLocated(forWhom));
     }
 }

@@ -19,8 +19,6 @@ import java.time.Duration;
 public class BaseTest {
     protected WebDriver driver;
     protected MainPage mainPage;
-// локатор для принятия кук
-    private By acceptCookie = By.xpath("//*[@id=\"rcc-confirm-button\"]"); //локатор для кнопки "да все привыкли"
 
 
     @Before
@@ -41,14 +39,9 @@ public class BaseTest {
 
         // Инициализация MainPage
         mainPage = new MainPage(driver);
-        acceptCookies();
+        mainPage.acceptCookies();
     }
-    // Метод для принятия кук
-    public void acceptCookies() {
-        WebElement cookieButton = new WebDriverWait(driver, Duration.ofSeconds(5))
-                .until(ExpectedConditions.elementToBeClickable(acceptCookie));
-        cookieButton.click();
-    }
+
 
     @After
     public void tearDown() {

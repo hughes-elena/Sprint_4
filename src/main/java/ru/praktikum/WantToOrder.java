@@ -19,15 +19,17 @@ public class WantToOrder {
 
     private final By yesButton = By.xpath("//button[text()='Да']");
     private final By orderSuccessText = By.xpath("//div[text()='Заказ оформлен']");
+    private final By orderPlaced = By.xpath("//div[text()='Заказ оформлен']");
+
 
     public void clickYesButton() {
         WebElement order = driver.findElement(yesButton); // ищет кнопку "Да все привыкли"
         order.click();
 // Ждём в этом методе появления след стр "Заказ оформлен"
         new WebDriverWait(driver, Duration.ofSeconds(15))
-                .until(ExpectedConditions.visibilityOfElementLocated(
-                        By.xpath("//div[text()='Заказ оформлен']")));
+                .until(ExpectedConditions.visibilityOfElementLocated(orderPlaced));
     }
+
     public String getOrderSuccessText() {
         WebElement headerElement = driver.findElement(orderSuccessText);
         return headerElement.getText();
